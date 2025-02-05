@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const express = require("express");
-const port = 3000;
+const port = 8000;
 const product_router = require("./routes/crudRoutes");
 const {user_router} = require("./routes/userRouter");
-const {connectMongo} = require("./connections/MongoConnections");
+const connectMongo = require("./connections/MongoConnections");
 const app = express();
 
 connectMongo().then(()=>console.log("mongo connected"))

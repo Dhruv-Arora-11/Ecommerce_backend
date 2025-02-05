@@ -58,33 +58,43 @@ async function delete_product(request,response){
 }
 
 
-async function update_product(request,response){
-    const body = request.body;
-    if (
-        !body.pro_name ||
-        !body.pro_price ||
-        !body.image
-    ) {
-        return response.status(400).json({ msg: "All fields are required" });
-    }
+async function update_product(req, res) {
     try {
-        const updated_user = await usermodel.findOneAndUpdate(
-            { name: name, email: email },
-            { name: newName, email: newEmail },
+        if (!req.body.pro_name) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        const pro_name = req.body.pro_name;
+        const pro_price = req.body.pro_price;
+        const image = req.body.image;
+        const newProName = req.body.newProName;
+        const newProPrice = req.body.newProPrice;
+        const newImage = req.body.newImage;
+
+        const updated_product = await productModel.findOneAndUpdate(
+            {
+                pro_name: pro_name,
+                pro_price: pro_price,
+                image: image,
+            },
+            {
+                pro_name: newProName,
+                pro_price: newProPrice,
+                image: newImage,
+            },
             { new: true }
         );
-        
-        if (!updated_user) {
-            return res.status(404).json({ error: "User not found" });
+
+        if (!updated_product) {
+            return res.status(404).json({ error: "Product not found" });
         }
-        
-        return res.json(updated_user);
-        
-        response.status(200).json({ msg: "Product updated successfully", product: updatedProduct });
+
+        return res.end("Product updated successfully!");
     } catch (e) {
-        response.status(500).json({ error: e.message });
+        return res.status(500).json({ error: "Internal server error" });
     }
 }
+
 
 
 module.exports = {
