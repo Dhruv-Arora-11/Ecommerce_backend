@@ -34,18 +34,20 @@ async function postNewUser(req , res){
     try{
         if (
             !req.body.name ||
-            !req.body.email
+            !req.body.email ||
+            !req.body.cartList 
         ){
             return res.status(400).json({msg:"All fields are req..."})
         }
 
         const email = req.body.email;
         const name = req.body.name;
+        const cartList = req.body.cartList;
 
         createdUser = await userModel.create({
                 name:`${name}`,
                 email:`${email}`,
-                
+                cartList:`${cartList}`,
             }) 
         return res.end("Ok done !")
 
@@ -69,15 +71,16 @@ async function updateUser(req , res){
         const name = req.body.name;
         const newName = req.body.newName;
         const newEmail = req.body.newEmail;
+        const cartList = req.body.cartList;
 
         updated_user =await userModel.findOneAndUpdate(
             {
-            name:`${name}`,
             email:`${email}`,
             },
             {
                 name:`${newName}`,
                 email:`${newEmail}`,
+                cartList:`${cartList}`,
             },
             { new: true } 
         )
