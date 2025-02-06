@@ -45,6 +45,7 @@ async function postNewUser(req , res){
         createdUser = await userModel.create({
                 name:`${name}`,
                 email:`${email}`,
+                
             }) 
         return res.end("Ok done !")
 

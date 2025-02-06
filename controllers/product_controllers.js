@@ -1,4 +1,5 @@
 const pro_model = require("../models/product_model");
+const { findOneAndUpdate } = require("../models/user_model");
 
 async function get_all_products(req, res) {
     try {
@@ -26,7 +27,7 @@ async function post_product(request,response){
             pro_price: request.body.pro_price,
             image: request.body.image,
         })
-        return response.end("Ok done !")
+        return response.status(201).json({ msg: "Product created successfully!" });
     }catch(e){
         response.status(500).json({ error: e.message });
     }
@@ -58,12 +59,31 @@ async function delete_product(request,response){
 }
 
 
-async function update_product(req, res) {
-    try {
-        if (!req.body.pro_name) {
+
+async function addToCart(req , res){ 
+    try{
+        if(!req.body.cartList || !req.body.email){
             return res.status(400).json({ error: "All fields are required" });
         }
+        await pro_model.findOneAndUpdate(
+            {email:req.body.email},
+            {cartList : req.body.cartList},
+            {new:true},
+        );
 
+        return res.end("cart List updated")
+    }catch(e){
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+async function update_product(req, res) {
+    try {
+        if (!newProName || !newProPrice || !newImage) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+        
         const pro_name = req.body.pro_name;
         const pro_price = req.body.pro_price;
         const image = req.body.image;
@@ -71,7 +91,7 @@ async function update_product(req, res) {
         const newProPrice = req.body.newProPrice;
         const newImage = req.body.newImage;
 
-        const updated_product = await productModel.findOneAndUpdate(
+        const updated_product = await pro_model.findOneAndUpdate(
             {
                 pro_name: pro_name,
                 pro_price: pro_price,
@@ -101,5 +121,6 @@ module.exports = {
     get_all_products,
     post_product,
     delete_product,
-    update_product
+    update_product,
+    addToCart
 };
